@@ -1,10 +1,10 @@
 <?php
 
 //$dbname='mccauction';		// if using different database, change it here
-$dbname='auction';
-$dblogin='myauction';			// read-only login for the single table
+$dbname='';
+$dblogin='';			// read-only login for the single table
 $dbuser=$dblogin;
-$dbpass='5z58d8RxJ6Y3eMeH';
+$dbpass='';
 $dbhost='localhost';
 $error_message='';
 
