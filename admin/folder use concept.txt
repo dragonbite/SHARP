@@ -1,0 +1,21 @@
+The concept behind this folder is to house the forms for an organization using this web applications to customize their version for their organization.
+
+	ORGANIZATION INFORMATION
+	=================
+	Organization's Name
+	Organization's address (street, city, zip, email, website, phone)
+	Logo file (include upload and resizing)
+	Credit card website page
+	
+	ACTIVITY INFORMATION
+	=================
+	Activity Name
+	Auction Year
+	
+	USER INFORMATION
+	=================
+	Cashier's username/password
+	Administrator's username/password & email
+	
+	
+	
