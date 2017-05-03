@@ -8,7 +8,8 @@
 
     if(isset($_GET['searchfor'])) 
     {
-        $searchvar = mysql_escape_string($_GET["searchfor"]);
+        //$searchvar = mysql_escape_string($_GET["searchfor"]);
+        $searchvar = mysqli_escape_string($dbconn, $_GET["searchfor"]);
         $output[] = '<a href="bidder.php?cid=new">Add New Customer</a>';
     }
 
@@ -18,8 +19,11 @@
 
 //    $data = new getData;
 //    $data->auctionyear = $_SESSION['auctionyear'];
-    $data->searchfor = mysql_escape_string($searchvar);
-    $results = $data->getCustomerList();
+    
+    //$data->searchfor = mysql_escape_string($searchvar);
+    $data->searchfor = mysqli_escape_string($dbconn, $searchvar);
+    
+    $results = $data->getCustomerList($dbconn);
 
     //$sql = itemlist_select($searchvar);
     //$result = mysql_query($sql);
@@ -36,7 +40,7 @@
         $output[] = '</thead>';
         
         $output[] = '<tbody>';
-        while($row = mysql_fetch_assoc($results))	//reference by assoc array key
+        while($row = mysqli_fetch_assoc($results))	//reference by assoc array key
         {
             
             $output[] = '<tr>';

@@ -39,7 +39,7 @@ if($_POST)
             
 		if(isset($_POST[$field])) 
 		{
-			$item[$field] = mysql_escape_string($_POST[$field]);
+			$item[$field] = mysqli_escape_string($dbconn, $_POST[$field]);
 		}
 		
 		if($field=="SilentAuction") 
@@ -69,7 +69,7 @@ if($_POST)
             $sql[] = "AuctionItemId=" . $item['AuctionItemId'] . ";";
 	    
             //print '<br>' . implode(" ",$sql);
-            $result = mysql_query(implode(" ",$sql)) or die('error saving record');
+            $result = mysqli_query($dbconn, implode(" ",$sql)) or die('error saving record');
         }
         else
         {
@@ -102,14 +102,14 @@ if($_POST)
             $sql[] = ");";
             
             //print '<br>' . implode(" ",$sql);
-            $results = mysql_query(implode(" ",$sql));
+            $results = mysqli_query($dbconn, implode(" ",$sql));
 
             if(!$results)
             {
                 print "There was an error running your query.";
                 exit;
             }             
-            //$item[] = mysql_insert_id();
+            //$item[] = mysqli_insert_id($dbconn);
         }
         
 	
@@ -152,12 +152,12 @@ if($_GET)
         $sql[] = "AND AuctionItemNumber='" . $AuctionItemNumber . "'"; 
         $sql[] = "ORDER BY CAST(AuctionItemNumber AS unsigned)" . ";";
 
-        $results = mysql_query(implode(" ",$sql));
+        $results = mysqli_query($dbconn, implode(" ",$sql));
 
         if($results) 
         {
 
-            while($x = mysql_fetch_assoc($results)) 
+            while($x = mysqli_fetch_assoc($results)) 
             {
                 foreach($x as $field=>$value) 
                 {
@@ -175,14 +175,14 @@ if($_GET)
                 $sql_next[] = "AuctionYear=" . $_SESSION['auctionyear'];
                 $sql_next[] = "ORDER BY CAST(AuctionItemNumber AS unsigned)" . ";";
 
-                $results_next = mysql_query(implode(" ",$sql_next));
+                $results_next = mysqli_query($dbconn, implode(" ",$sql_next));
                 
                 $found = FALSE;
 
                 if($results_next)
                 {
                         //$x_next = mysql_fetch_array($results_next);
-                    while($x_next = mysql_fetch_array($results_next))
+                    while($x_next = mysqli_fetch_array($results_next))
                     {
                         
                     
@@ -413,8 +413,8 @@ if($_GET)
             	
 				//print '<p>' . implode(" ",$sql) . '</p>';
             	
-				$results = mysql_query(implode(" ",$sql));
-            	//$results = mysql_query($sql);
+				$results = mysqli_query($dbconn, implode(" ",$sql));
+            	//$results = mysqli_query($dbconn, $sql);
             	
             	?>
                 <div class="pagecolumn">
@@ -430,7 +430,7 @@ if($_GET)
                             <?php
                             if($results)
                             {
-                                while ($dr = mysql_fetch_assoc($results))
+                                while ($dr = mysqli_fetch_assoc($results))
                                 {
                                     if($dr['AuctionItemNumber'] == $item['AuctionItemNumber'])
                                     {

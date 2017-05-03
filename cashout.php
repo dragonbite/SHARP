@@ -25,7 +25,7 @@ if($_POST)
     {
         if($k == 'PaymentDetails')
         {
-            $pay[$k] = mysql_escape_string ($x[$k]);
+            $pay[$k] = mysqli_escape_string ($dbconn, $x[$k]);
         }
         elseif(is_numeric($x[$k]))
         {
@@ -45,7 +45,7 @@ if($_POST)
     
             
     //$results = $data->updateBidderPayment($paymentinfo);
-    $data->updateBidderPayment($pay);
+    $data->updateBidderPayment($pay, $dbconn);
 
     Header('Location:cashout.php?biddernumber=' . $x['BidderNumber'] . '&paid=Y');
 }
@@ -82,19 +82,19 @@ if($_GET)
  
     // GET BIDDER INFORMATION
 
-    $bidderinformation = $data->getBidderByNumber();
+    $bidderinformation = $data->getBidderByNumber($dbconn);
 
     // GET WINNINGS
     
-    $auctioninformation = $data->getPurchases();
+    $auctioninformation = $data->getPurchases($dbconn);
 
     
-    if(mysql_num_rows($bidderinformation) < 1)
+    if(mysqli_num_rows( $bidderinformation) < 1)
     { 
         $error_message .= "The Bidder Selected, " . $biddernumber . " is either not in the system or<br>entered is not a valid number.Please try again.";
         $showform=TRUE;
     }
-    elseif(mysql_num_rows($auctioninformation)<1)
+    elseif(mysqli_num_rows( $auctioninformation)<1)
     {
         $error_message .= "The Bidder Selected, " . $biddernumber . " does not have any winning bids.<br>If this is in error, please find the item(s) in question<br>and verify the correct winner. Then try again.";
         $showform=TRUE;           
@@ -219,7 +219,7 @@ and open the template in the editor.
                 <?php
                 if(!$showform)
                 {
-                    $bid = mysql_fetch_assoc($bidderinformation);
+                    $bid = mysqli_fetch_assoc($bidderinformation);
                     ?>
                 <p>Verify the customer and winning bids before asking about payment method.</p>
                 <div id="biddercashout">
@@ -270,7 +270,7 @@ and open the template in the editor.
                                     <?php
                                     $totals=0;
                                     $displaytype="";
-                                    while($item=mysql_fetch_assoc($auctioninformation))
+                                    while($item=mysqli_fetch_assoc($auctioninformation))
                                     {
                                         if($item['SilentAuction'] != $displaytype)
                                         {

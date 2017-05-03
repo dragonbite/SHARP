@@ -29,8 +29,8 @@ $output[] = '<span style="float:right">' . Date("M d,Y") . '</span><br>';
  *      BIDDER SECTION
  */
 
-$bidder_record = $data->getBidderByNumber();
-$brs = mysql_fetch_assoc($bidder_record);
+$bidder_record = $data->getBidderByNumber($dbconn);
+$brs = mysqli_fetch_assoc($bidder_record);
 
 $output[] = 'Auction Receipt for Bidder Number  <b>' . $brs['BidderNumber'] . '</b><br>' ;
 $output[] = '<hr>' ;
@@ -56,7 +56,7 @@ $output[] = '<hr>';
  *      PURCHASES SECTION
  */
 
-$purchase_record = $data->getPurchases();
+$purchase_record = $data->getPurchases($dbconn);
 $output[] = '<table id="PurchaseList">';
 $output[] = '<thead>';
 $output[] = '<tr>';
@@ -69,7 +69,7 @@ $output[] = '<tbody>';
 
 $total_purchases = 0;
 
-while ($dr = mysql_fetch_assoc($purchase_record)) 
+while ($dr = mysqli_fetch_assoc($purchase_record)) 
 {
     $output[] = '<tr>';
     $output[] = '<td style="vertical-align: top; white-space: nowrap;">' . $dr['AuctionItemNumber'] . '</td>';

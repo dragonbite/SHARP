@@ -64,7 +64,8 @@
 	    $sql[] = "AND bidder.auctionyear=" . $this->auctionyear;
 	    $sql[] = "WHERE BidderNumber=" . $this->bnum;
 	    $sql[] = ";";
-            return(mysql_query(implode(" ",$sql)));
+        //return(mysql_query(implode(" ",$sql)));
+        return(mysqli_query($dbconn, implode(" ",$sql)));
  	}
  	
  	function getCustomer()

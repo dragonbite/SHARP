@@ -13,6 +13,8 @@
  */
  
  require_once 'config.inc.php';
+// $dbconn = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname) or die ('<p>Error connecting to mysql</p>');
+
  
  class getData
  {
@@ -22,7 +24,7 @@
  	var $searchfor = "";	// string to search for when finding bidder
  	var $info;
         
-        private $sql = array();
+    private $sql = array();
  	
  	private function getYear()
  	{
@@ -34,7 +36,7 @@
 			GET Information
 ================================================================
 */
- 	function getBidderByNumber()
+ 	function getBidderByNumber($dbconn)
  	{
         unset($sql);
         //gets the entire Bidder information, from the Customer and Bidder tables,
@@ -64,10 +66,11 @@
 	    $sql[] = "AND bidder.auctionyear=" . $this->auctionyear;
 	    $sql[] = "WHERE BidderNumber=" . $this->bnum;
 	    $sql[] = ";";
-            return(mysql_query(implode(" ",$sql)));
+        //return(mysql_query(implode(" ",$sql)));
+        return(mysqli_query($dbconn, implode(" ",$sql)));
  	}
  	
- 	function getCustomer()
+ 	function getCustomer($dbconn)
  	{
  		unset($sql);
  		//get customer information based on the customer's id
@@ -94,13 +97,16 @@
         $sql[] = "auction.bidder ON customers.CustomerId=bidder.CustomerId";
         $sql[] = "AND bidder.auctionyear=" . $this->auctionyear;
         $sql[] = "WHERE customers.CustomerId=" . $this->cid . ";";
- 	return(mysql_query(implode(" ",$sql)));
+        //return(mysql_query(implode(" ",$sql)));
+        return(mysqli_query($dbconn, implode(" ",$sql)));
+
  	}
 
- 	function getCustomerList()
+ 	function getCustomerList($dbconn)
  	{
         unset($sql);
-        $this->searchfor = mysql_escape_string($this->searchfor);
+        //$this->searchfor = mysql_escape_string($this->searchfor);
+        //$this->searchfor = mysqli_escape_string($dbconn, $this->searchfor);
         //get list of customers listing for search results
         $sql[] = "SELECT";
         $sql[] = "customers.CustomerId, FirstName, LastName, Address, City, State, Zip, Email, Phone,";
@@ -116,10 +122,12 @@
         $sql[] = " OR Phone like '%" . $this->searchfor . "%'";
         $sql[] = " OR Email like '%" . $this->searchfor . "%'";
         $sql[] = "ORDER BY LastName, FirstName";
-        return(mysql_query(implode(" ",$sql)));
+        //return(mysql_query(implode(" ",$sql)));
+        return(mysqli_query($dbconn, implode(" ",$sql)));
+
  	}
  	
- 	function getPurchases()
+ 	function getPurchases($dbconn)
  	{
         unset($sql);
         //get list of won auctions for user based on their BidderNumber
@@ -136,14 +144,18 @@
         $sql[] = "AuctionYear=" . $this->auctionyear;
         $sql[] = "AND WinningBidder='" . $this->bnum . "'"; 
         $sql[] = "ORDER BY SilentAuction, CAST(AuctionItemNumber AS unsigned)" . ";";
-        return(mysql_query(implode(" ",$sql)));
+        //return(mysql_query(implode(" ",$sql)));
+        return(mysqli_query($dbconn, implode(" ",$sql)));
+
  	}
  	
  	function getItemsList($silent)
  	{
  		unset($sql);
  		//get list of all items
- 		return(mysql_query(implode(" ",$sql)));
+        //return(mysql_query(implode(" ",$sql)));
+        return(mysqli_query($dbconn, implode(" ",$sql)));
+
  	}
  	
 /*
@@ -151,17 +163,19 @@
 			INSERT New Records
 ================================================================
 */
-	function insertBidderNumber()
+	function insertBidderNumber($dbconn)
 	{
-		unset($sql);
+		unset($sql1);
 		// Insert a new, automatically generated Bidder Number
 		$sql1[] = " INSERT INTO auction.bidder (CustomerId, BidderNumber, AuctionYear)";
         $sql1[] = " SELECT " . $this->cid . ", coalesce(max(BidderNumber)+1,1), " . $this->auctionyear;
         $sql1[] = " FROM auction.bidder";
         $sql1[] = " WHERE AuctionYear = " . $this->auctionyear . ";";
-        mysql_query(implode(" ",$sql1));
+        //mysql_query(implode(" ",$sql1));
+        mysqli_query($dbconn, implode(" ",$sql1));
+        
 	}
-	function insertCustomer($info)
+	function insertCustomer($info, $dbconn)
 	{
 		unset($sql);
 		// Insert a new record into the Customer table and returns the CustomerId value
@@ -179,10 +193,11 @@
         $sql[] = "'" . $info['Email'] . "'" . ",";
         $sql[] = "'" . $info['Notes'] . "'" ;
         $sql[] = ");";
-        $results = mysql_query(implode(" ",$sql));
+        //$results = mysql_query(implode(" ",$sql));
+        $results = mysqli_query($dbconn, implode(" ", $sql));
         if($results)
         {
-        	$this->cid = mysql_insert_id();
+        	$this->cid = mysqli_insert_id($dbconn);
         }
         return $this->cid;
 	}
@@ -195,7 +210,7 @@
 			UPDATE Records
 ================================================================
 */
-	function updateCustomer($info)
+	function updateCustomer($info, $dbconn)
 	{
 		$sql[] = "UPDATE auction.customers SET";
         $sql[] = "FirstName= '" . $info['FirstName'] . "', ";
@@ -211,9 +226,10 @@
         $sql[] = "Notes='" . $info['Notes'] . "'";
         $sql[] = "WHERE CustomerId=" . $info['CustomerId'];
         $sql[] = ";";
-        return mysql_query(implode(" ",$sql));
+        //return mysql_query(implode(" ",$sql));
+        return mysqli_query( $dbconn, implode(" ",$sql));
 	}
-	function updateBidderNumber($info)
+	function updateBidderNumber($info,$dbconn)
 	{
 		unset($sql);
 		// Updates the Bidder Number for the bidder
@@ -224,7 +240,8 @@
 	        $sql[] = "BidderNumber = " . $info['BidderNumber'];
 	        $sql[] = " WHERE BidderId = " . $info['BidderId'];
 	        $sql[] = ";";
-	        mysql_query(implode(" ",$sql1));
+	        //mysql_query(implode(" ",$sql1));
+	        mysqli_query($dbconn, implode(" ",$sql));
 		}
 		else
 		{
@@ -235,7 +252,7 @@
 	{
 		
 	}
-	function updateBidderPayment($info)
+	function updateBidderPayment($info,$dbconn)
 	{
 		unset($sql);
         $sql[] = "UPDATE auction.bidder SET";
@@ -245,7 +262,8 @@
         $sql[] = "TotalPaid=" . $info['TotalPaid'];
         $sql[] = "WHERE BidderId=" . $info['BidderId'];
         $sql[] = ";";
-        return mysql_query(implode(" ",$sql)) or die ('Error updating payment data');
+        //return mysql_query(implode(" ",$sql)) or die ('Error updating payment data');
+        return mysqli_query($dbconn, implode(" ",$sql)) or die ('Error updating payment data');
 	}
 
 /*
@@ -253,15 +271,16 @@
 			Check Data
 ================================================================
 */
-	function checkBidderNumberExists($checkNumber)
+	function checkBidderNumberExists($checkNumber,$dbconn)
 	{
 		// Check that new number is unique
 		$sql_check = array();
 		$sql_check[] = "SELECT BidderNumber";
 		$sql_check[] = "FROM auction.bidder";
 		$sql_check[] = "WHERE BidderNumber=" . $checkNumber . ";";
-		$check_result = mysql_query(implode(" ",$sql_check));
-		$check_return = mysql_fetch_array($check_result);
+		//$check_result = mysql_query(implode(" ",$sql_check));
+		$check_result = mysqli_query($dbconn, implode(" ",$sql_check));
+		$check_return = mysqli_fetch_array($check_result);
 		if ($checkNumber == $check_return[0])
 		{
 			return TRUE;

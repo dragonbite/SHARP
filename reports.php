@@ -69,10 +69,10 @@ require_once 'auth.php';
         			$sql[] = "auction.bidder";
         			$sql[] = "WHERE AuctionYear=" . $_SESSION['auctionyear'];
         			$sql[] = ";";
-        			$bidderresults = mysql_query(implode(" ",$sql));
+        			$bidderresults = mysqli_query($dbconn, implode(" ",$sql));
                                 if($bidderresults)
                                 {
-                                    $bidderinfo=mysql_fetch_assoc($bidderresults);
+                                    $bidderinfo=mysqli_fetch_assoc($bidderresults);
                                     $bidders['Counts'] = $bidderinfo['Counts'];
                                     $bidders['Revenue'] = ($bidders['Counts'] * 10);
                                 }
@@ -94,10 +94,10 @@ require_once 'auth.php';
         			$sql[] = "WHERE AuctionYear=" . $_SESSION['auctionyear'];
         			$sql[] = "GROUP BY SilentAuction";
         			$sql[] = ";";
-        			$auctionresults = mysql_query(implode(" ",$sql));
+        			$auctionresults = mysqli_query($dbconn, implode(" ",$sql));
                                 if($auctionresults)
                                 {
-                                    while($item=mysql_fetch_assoc($auctionresults))
+                                    while($item=mysqli_fetch_assoc($auctionresults))
                                     {
                                             switch($item['SilentAuction'])
                                             {

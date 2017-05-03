@@ -61,7 +61,7 @@ if ($_POST)
     $pd = array();
     foreach($_POST as $k=>$v)
     {
-        $pd[$k] = mysql_escape_string($v);
+        $pd[$k] = mysqli_escape_string($dbconn, $v);
         //print '<br>' . $k . '=' . $v;
     }
     
@@ -107,9 +107,9 @@ if ($_POST)
 //                $sql1[] = " SELECT " . $cid . ", coalesce(max(BidderNumber)+1,1), " . $_SESSION['auctionyear'];
 //                $sql1[] = " FROM auction.bidder";
 //                $sql1[] = " WHERE AuctionYear = " . $_SESSION['auctionyear'] . ";";
-//                mysql_query(implode(" ",$sql1));
+//                mysqli_query($dbconn, implode(" ",$sql1));
 				
-				$data->insertBidderNumber();
+				$data->insertBidderNumber($dbconn);
             } 
             elseif ($pd['BidderId'] > 0)
             {
@@ -125,9 +125,9 @@ if ($_POST)
 //                $sql1[] = "BidderNumber = " . $pd['BidderNumber'];
 //                $sql1[] = " WHERE BidderId = " . $pd['BidderId'];
 //                $sql1[] = ";";
-//                mysql_query(implode(" ",$sql1));
+//                mysqli_query($dbconn, implode(" ",$sql1));
                 
-                $message = $data->updateBidderNumber($pd);
+                $message = $data->updateBidderNumber($pd, $dbconn);
                 if(strlen($message) > 0)
                 {
                 	// there was an error
@@ -154,9 +154,9 @@ if ($_POST)
 //            $sql[] = "Notes='" . $pd['Notes'] . "'";
 //            $sql[] = "WHERE CustomerId=" . $pd['CustomerId'];
 //            $sql[] = ";";
-//            $results = mysql_query(implode(" ",$sql));
+//            $results = mysqli_query($dbconn, implode(" ",$sql));
             
-            $results = $data->updateCustomer($pd);
+            $results = $data->updateCustomer($pd,$dbconn);
             
             if($results)
             {
@@ -192,13 +192,13 @@ if ($_POST)
 //            //print implode(" ",$sql);
 //   
 //            //TODO: get the last record created ID to set as teh customer id
-//            $results = mysql_query(implode(" ",$sql));
-//            $cid = mysql_insert_id();
+//            $results = mysqli_query($dbconn, implode(" ",$sql));
+//            $cid = mysqli_insert_id($dbconn);
             
             //$data = new getData();
             //$data->auctionyear = $_SESSION['auctionyear'];
             
-            $cid = $data->insertCustomer($pd);
+            $cid = $data->insertCustomer($pd, $dbconn);
             
             //if(!$results)
             if($cid > 0)
@@ -256,11 +256,11 @@ if($_GET)
         //$data = new getData;
         //$data->auctionyear = $_SESSION['auctionyear'];
         $data->cid = $_GET['cid'];
-        $getresult = $data->getCustomer();
+        $getresult = $data->getCustomer($dbconn);
 
         if ($getresult)
         {           
-            $cust = mysql_fetch_assoc($getresult);
+            $cust = mysqli_fetch_assoc($getresult);
             foreach($cust as $key=>$value)
             {
                 $cu[$key] = $value;
@@ -273,7 +273,7 @@ if($_GET)
            if($cu['BidderNumber'] > 0)
            {
                $data->bnum = $cu['BidderNumber'];
-               $auctioninformation = $data->getPurchases();
+               $auctioninformation = $data->getPurchases($dbconn);              
            }
         }
         else
@@ -451,7 +451,7 @@ if($_GET)
                                     <?php
                                     $totals=0;
                                     $displaytype="";
-                                    if(mysql_num_rows($auctioninformation) == 0)
+                                    if(mysqli_num_rows($auctioninformation) == 0)
                                     {
                                         ?>
                                     <tr>
@@ -461,7 +461,7 @@ if($_GET)
                                     }
                                     else
                                     {
-                                    while($item=mysql_fetch_assoc($auctioninformation))
+                                    while($item=mysqli_fetch_assoc($auctioninformation))
                                     {
                                         if($item['SilentAuction'] != $displaytype)
                                         {
