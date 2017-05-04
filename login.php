@@ -21,8 +21,8 @@ if($_POST)
     }
     
     //TODO: remove the "-2" from the current year so use the current year
-    //$sql = "SELECT token, Year(CURDATE()) as 'auctionyear' FROM auction.security WHERE Password='" . $entered['password'] . "' AND UserId='" . $entered['username'] ."';";
-    $sql = "SELECT token, Year(CURDATE()) - 1 as 'auctionyear' FROM auction.security WHERE Password='" . $entered['password'] . "' AND UserId='" . $entered['username'] ."';";
+    $sql = "SELECT token, Year(CURDATE()) as 'auctionyear' FROM auction.security WHERE Password='" . $entered['password'] . "' AND UserId='" . $entered['username'] ."';";
+    //$sql = "SELECT token, Year(CURDATE()) - 1 as 'auctionyear' FROM auction.security WHERE Password='" . $entered['password'] . "' AND UserId='" . $entered['username'] ."';";
         
     //$result = mysql_query($sql);
 
