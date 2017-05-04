@@ -41,7 +41,6 @@ if($_POST)
         {
             $_SESSION[$key]=$value;
         }
-        $_SESSION['auctionyear'] = 2015;
     }
     else
     {
