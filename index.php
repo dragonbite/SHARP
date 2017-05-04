@@ -15,12 +15,7 @@ $error_message="";
   */
 $organization = "Middlebury Congregational Church";
 $logo = "images/church.JPG";
-if($_SESSION('auctionyear')) {
-    $auction_year = $_SESSION('auctionyear');
-}
-else {
-    $auction_year = date("Y");
-}
+$auction_year = date("Y");
 //$auction_year = 2015;
 $activity = $auction_year . " Auction";
 ?>
